@@ -1,0 +1,40 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4%;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .logo {
+  width: max(10%,80px);
+}
+
+.navbar .profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Fallback for missing images */
+.navbar .logo::before {
+  content: "ADMIN PANEL";
+  font-weight: bold;
+  color: #ff6b35;
+  font-size: 18px;
+}
+
+.navbar .profile {
+  background-color: #ff6b35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+
+.navbar .profile::before {
+  content: "A";
+}
