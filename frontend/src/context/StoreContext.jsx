@@ -29,16 +29,6 @@ const StoreContextProvider = (props) => {
     loadData();
   }, []);
 
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    if (Object.keys(cartItems).length > 0) {
-      try {
-        localStorage.setItem("cartItems", JSON.stringify(cartItems));
-      } catch (error) {
-        console.error("Error saving cart to localStorage:", error);
-      }
-    }
-  }, [cartItems]);
 
   const addToCart = (itemId) => {
     if (!cartItems[itemId]) {
@@ -65,10 +55,19 @@ const StoreContextProvider = (props) => {
     return totalAmount;
   };
 
-  const clearCart = () => {
-    setCartItems({});
-    localStorage.removeItem("cartItems");
-  };
+    const fetchFoodList = async () =>{
+    }
+
+  useEffect (() => {
+    async function loadData() {
+      await fetchFoodList();
+         if (localStorage.getItem("token")) {
+            setToken(localStorage.getItem("token"));
+  }
+    }
+    loadData();
+  },[])
+  
 
   const contextValue = {
     food_list,
@@ -77,7 +76,6 @@ const StoreContextProvider = (props) => {
     addToCart,
     removeFromCart,
     getTotalCartAmount,
-    clearCart,
     url,
     token,
     setToken,

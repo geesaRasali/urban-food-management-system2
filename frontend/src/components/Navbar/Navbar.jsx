@@ -6,15 +6,14 @@ import { StoreContext } from "../../context/StoreContext";
 
 const Navbar = ({setShowLogin}) => {
   const [menu, setMenu] = useState("menu");
-  const navigate = useNavigate();
+ 
 
   const { getTotalCartAmount,token,setToken,clearCart} = useContext(StoreContext);
 
+     const navigate = useNavigate();
   const logout = () => {
-    console.log("Logout clicked"); // Debug log
     localStorage.removeItem("token");
     setToken("");
-    clearCart(); // Clear cart on logout
     navigate("/");
   }
 
