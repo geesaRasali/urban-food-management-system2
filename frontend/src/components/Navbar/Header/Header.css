@@ -36,8 +36,7 @@
     line-height: 28px;
     margin-bottom: 40px;
     font-weight: 400;
-    color: #fbfbfa94;
-    background: hsla(0, 0%, 40%, 0.327);
+    color:rgb(230, 224, 224);
     border-radius: 10px;
 padding: 3px 5px 3px 5px;
 }
@@ -46,7 +45,7 @@ padding: 3px 5px 3px 5px;
     padding: 15px 30px;
     font-size: 18px;
     font-weight: 500;
-    background: hsla(0, 6%, 90%, 0.827);
+    background: hsla(40, 6%, 90%, 0.827);
     color: rgb(58, 58, 58);
     border: none;
     border-radius: 10px;
