@@ -4,7 +4,6 @@ import Stripe from "stripe"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
-// placing user order for frontend
 const placeOrder = async (req,res) => {
 
     const frontend_url = "http://localhost:5173"
@@ -12,55 +11,60 @@ const placeOrder = async (req,res) => {
     try {
         console.log("Order request received:", req.body);
         
-        // Check if required fields are present
+       
         if (!req.body.items || !req.body.amount || !req.body.address) {
             return res.json({success:false, message:"Missing required fields"});
         }
 
-        // Get userId from token (you might need to decode JWT token)
+        
         const userId = req.headers.token; // Temporary - you should decode the actual userId from JWT
 
+       
         const newOrder = new orderModel({
             userId: userId,
-            items:req.body.items,
-            amount:req.body.amount,
-            address:req.body.address
+            items: req.body.items,
+            amount: req.body.amount,
+            address: req.body.address
         })
 
         await newOrder.save();
         console.log("Order saved:", newOrder._id);
    
+        
         const line_items = req.body.items.map((item)=>({
             price_data:{
-                currency:"lkr",
+                currency:"lkr",                    
                 product_data:{
-                    name:item.name
+                    name:item.name                  // Product name
                 },
-                unit_amount:item.price*100*80
+                unit_amount:item.price*100*80  // Price in cents (Stripe requirement)
             },
-            quantity:item.quantity
+            quantity:item.quantity                  // How many items
         }))
    
+         // Add delivery charges as separate line item
          line_items.push({
             price_data:{
                 currency:"lkr",
                 product_data:{
                     name:"Delivery Charges"
                 },
-                unit_amount:2*100*80
+                unit_amount:2*100*80           // Delivery fee
             },
             quantity:1
          })
 
+         // Create Stripe checkout session
          const session = await stripe.checkout.sessions.create({
-              line_items:line_items,
-              mode:'payment',
+              line_items:line_items,              // What customer is buying
+              mode:'payment',                     // One-time payment
               success_url:`${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
               cancel_url:`${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
               
 
             }) 
             
+            // Send session URL back to frontend
             res.json({success:true,success_url:session.url})
 
     } catch (error) {
@@ -69,5 +73,9 @@ const placeOrder = async (req,res) => {
     }
 
 }
+
+const verifyOrder =  async (req,res) =>{
+
+}
  
-export {placeOrder}
+export {placeOrder,verifyOrder}
