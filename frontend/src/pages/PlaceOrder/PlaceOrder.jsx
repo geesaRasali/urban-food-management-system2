@@ -47,8 +47,8 @@ const PlaceOrder = () => {
        try {
          let response = await axios.post(url+"/api/order/place",orderData,{headers:{token}});
          if (response.data.success) {
-           const {success_url} = response.data;
-           window.location.replace(success_url);
+           const {session_url} = response.data;
+           window.location.replace(session_url);
          }
          else{
            alert("Error placing order");

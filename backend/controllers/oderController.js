@@ -21,14 +21,15 @@ const placeOrder = async (req,res) => {
 
        
         const newOrder = new orderModel({
-            userId: userId,
+            userId: req.body.userId,
             items: req.body.items,
             amount: req.body.amount,
             address: req.body.address
         })
 
         await newOrder.save();
-        console.log("Order saved:", newOrder._id);
+        await userModel.findByIdAndUpdate(req.body.userId,{cartData:{}});
+       
    
         
         const line_items = req.body.items.map((item)=>({
@@ -61,7 +62,6 @@ const placeOrder = async (req,res) => {
               success_url:`${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
               cancel_url:`${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
               
-
             }) 
             
             // Send session URL back to frontend
@@ -75,7 +75,23 @@ const placeOrder = async (req,res) => {
 }
 
 const verifyOrder =  async (req,res) =>{
+   const {orderId,success} = req.body;
+   try {
 
+       if (success=="true") {
+           await orderModel.findByIdAndUpdate(orderId,{payment:true});
+           res.json({success:true,message:'paid'})
+      
+        }
+
+        else{
+            await orderModel.findByIdAndDelete(orderId);
+            RES.json ({success:false,message:"Not Paid"})
+        }
+   } catch (error) {
+       console.log(error);
+       res.json({success:false,message:"Error"})
+   }
 }
  
 export {placeOrder,verifyOrder}
