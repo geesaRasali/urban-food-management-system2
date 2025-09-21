@@ -41,14 +41,13 @@ const PlaceOrder = () => {
        let orderData = {
         address:data,
         items:orderItems,
-        amount:getTotalCartAmount()+2,
-        userId: token // You might need to decode the token to get actual userId
+        amount:getTotalCartAmount()+2
        }
        try {
          let response = await axios.post(url+"/api/order/place",orderData,{headers:{token}});
          if (response.data.success) {
-           const {session_url} = response.data;
-           window.location.replace(session_url);
+           const {success_url} = response.data;
+           window.location.replace(success_url);
          }
          else{
            alert("Error placing order");

@@ -7,6 +7,7 @@ export const StoreContext = createContext(null);
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
+  const [foodList, setFoodList] = useState(food_list); // Initialize with static data
   const url = "http://localhost:4000";
 
   useEffect(() => {
@@ -31,13 +32,19 @@ const StoreContextProvider = (props) => {
   }, []);
 
   const addToCart = async (itemId) => {
-    if (!cartItems[itemId]) {
-      setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
-    } else {
-      setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    }
+    const updatedCart = !cartItems[itemId] 
+      ? { ...cartItems, [itemId]: 1 }
+      : { ...cartItems, [itemId]: cartItems[itemId] + 1 };
+    
+    setCartItems(updatedCart);
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    
     if (token) {
-      await axios.post(url + "/api/cart/add", { itemId }, { headers: { token } });
+      try {
+        await axios.post(url + "/api/cart/add", { itemId }, { headers: { token } });
+      } catch (error) {
+        console.error("Error adding item to cart:", error);
+      }
     }
   };
 
@@ -61,7 +68,7 @@ const StoreContextProvider = (props) => {
     let totalAmount = 0;
     for (const item in cartItems) {
       if (cartItems[item] > 0) {
-        let itemInfo = food_list.find((product) => product._id === item);
+        let itemInfo = foodList.find((product) => product._id === item);
         if (itemInfo) {
           totalAmount += itemInfo.price * cartItems[item];
         }
@@ -71,14 +78,26 @@ const StoreContextProvider = (props) => {
   };
 
   const fetchFoodList = async () => {
-       const response = await axios.get(url+"/api/food/list");
-       setFoodList(response.data.data)
+    try {
+      const response = await axios.get(url + "/api/food/list");
+      if (response.data.data && response.data.data.length > 0) {
+        setFoodList(response.data.data);
+      }
+      // If backend returns empty data or fails, keep using static food_list
+    } catch (error) {
+      console.log("Backend not available, using static food list");
+      // Keep the static food list that was initialized
+    }
   };
 
   const loadCartData = async (token) => {
-       const response = await axios.post(url+"api/cart/get",{},{headers:{token}})
-       setCartItems(response.data.cartData);
-      }
+    try {
+      const response = await axios.post(url + "/api/cart/get", {}, { headers: { token } });
+      setCartItems(response.data.cartData);
+    } catch (error) {
+      console.error("Error loading cart data:", error);
+    }
+  };
   useEffect(() => {
     async function loadData() {
       await fetchFoodList();
@@ -91,7 +110,7 @@ const StoreContextProvider = (props) => {
   }, []);
 
   const contextValue = {
-    food_list,
+    food_list: foodList,
     cartItems,
     setCartItems,
     addToCart,

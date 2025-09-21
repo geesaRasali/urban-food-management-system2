@@ -6,7 +6,7 @@ import { placeOrder, verifyOrder} from "../controllers/oderController.js"
 const orderRouter = express.Router();
 
 orderRouter.post("/place",authMiddleware,placeOrder);
-orderRouter.post("/varify",verifyOrder)
+orderRouter.post("/verify",verifyOrder)
 
 
 export default orderRouter;
