@@ -87,12 +87,19 @@ const verifyOrder = async (req, res) => {
 
 //user orders for frontend
 const userOrders = async (req,res) => {
-   try {
-      const orders = await orderModel.find({userId:req.body.userId});
-      res.json({success:true,data:orders})
+   try {  
+      // Get userId from req.body (set by authMiddleware)
+      const userId = req.body.userId;
+      
+      if (!userId) {
+        return res.json({success: false, message: "User ID not found"});
+      }
+      
+      const orders = await orderModel.find({userId: userId});
+      res.json({success: true, data: orders})
     } catch (error) {
       console.log(error)
-      res.json({success:false,message:"Error"})
+      res.json({success: false, message: "Error"})
    }
 }
 
