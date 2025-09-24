@@ -3,6 +3,7 @@ import Home from "./pages/Home/Home";
 import Cart from "./pages/Cart/Cart";
 import PlaceOrder from "./pages/PlaceOrder/PlaceOrder";
 import Verify from "./pages/Verify/Verify";
+import MyOrders from "./pages/MyOrders/MyOrders";
 import Navbar from "./components/Navbar/Navbar";
 import { useState } from "react";
 import LoginPopup from "./components/LoginPopup/LoginPopup";
@@ -21,8 +22,9 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
-          <Route path="/myorders" element={<div>My Orders Page - Create this component</div>} />
+          <Route path="/myorders" element={<MyOrders />} />
           <Route path="/verify" element={<Verify />} />
+         
         </Routes>
       </div>
       <Footer />
