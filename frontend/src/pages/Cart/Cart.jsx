@@ -4,7 +4,7 @@ import "./Cart.css";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { cartItems, food_list, removeFromCart , getTotalCartAmount} =useContext(StoreContext);
+  const { cartItems, food_list, removeFromCart , getTotalCartAmount, url} =useContext(StoreContext);
 
   const navigate=useNavigate();
   return (
@@ -22,10 +22,13 @@ const Cart = () => {
         <hr />
         {food_list.map((item, index) => {
           if (cartItems[item._id] > 0) {
+            // Determine if image is a static asset (imported) or backend URL (string)
+            const imageUrl = typeof item.image === 'string' ? url + "/images/" + item.image : item.image;
+            
             return (
               <div key={item._id}>
                 <div className="cart-item-title cart-item-item">
-                  <img src={item.image} alt="" />
+                  <img src={imageUrl} alt="" />
                   <p>{item.name}</p>
                   <p>${item.price}</p>
                   <p>{cartItems[item._id]}</p>
